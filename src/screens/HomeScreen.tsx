@@ -53,7 +53,7 @@ const HomeScreen = () => {
                 //     this.player = ref
                 // }}                                      // Store reference
                 // onBuffer={this.onBuffer}                // Callback when remote video is buffering
-                onError={(e: any) => { Alert.alert("Vérifiez votre connexion internet! Ou peut-être la diffusion a cessé") }}               // Callback when video cannot be loaded
+                onError={(e: any) => { Alert.alert("Vérifiez votre connexion internet! Ou peut-être la diffusion Live a cessé") }}               // Callback when video cannot be loaded
                 resizeMode='contain'
                 // fullscreen
                 controls

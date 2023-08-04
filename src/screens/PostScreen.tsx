@@ -9,7 +9,8 @@ import {
     Vibration,
     TextInput,
     View,
-    Image
+    Image,
+    ScrollView
 } from 'react-native';
 import { styles } from '../constants/styles';
 import database from '@react-native-firebase/firestore';
@@ -27,14 +28,14 @@ export default function PostScreen() {
     const [desc, setDesc] = useState('');
 
     const [msg, setMsg] = useState('');
-    const [data, setData] = useState([]);
+    const [datas, setDatas] = useState([]);
 
     useEffect(() => {
 
         database().collection('posts').orderBy('created_at', 'desc').onSnapshot((querySnapshot) => {
             const todos = querySnapshot.docs;
             const todoList: any = [];
-            todos.forEach( element => {
+            todos.forEach(element => {
                 const data = element.data();
                 const id = { id: element.id };
 
@@ -44,34 +45,44 @@ export default function PostScreen() {
                 console.log('=================post===================');
                 console.log(finalData);
                 console.log('====================================');
-                setData(todoList);
             });
+            setDatas(todoList);
+
         });
     }, []);
 
 
     return (
-        <SafeAreaView>
-            <View >
-                <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center',color:'black', margin:15, textDecorationLine:"underline" }}> Posts récents</Text>
-                <FlatList
-                    data={data}
-                    renderItem={(item: any) => {
+        <ScrollView style={{ flex: 1, width: '100%', height: '100%' }}>
+            <View style={{ padding: 15, marginBottom: 800, height: 1000, width: "100%" }}>
+                {datas.map((item: any) => {
 
-                        return (
-                            <TouchableOpacity onPress={() => Linking.openURL(item.item.desc)}>
-                                <View style={{ backgroundColor: 'black', borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}>
-                                    <Image resizeMode='contain' style={[{ width: '100%', height: 300 },]} source={{ uri:item.item.imageUrl}} />
+                    return (
+                        <TouchableOpacity key={item.id} style={{ marginBottom: 10 }} onPress={() => Linking.openURL(item?.desc)}>
+                            <View style={{
+                                backgroundColor: 'white',
+                                borderColor: '#cccccc',
+                                borderWidth: 1,
+                                shadowOpacity: 1,
+                                shadowColor: 'black',
+                                elevation: 4
+                            }}>
+                                {item?.imageUrl && <Image resizeMode='cover' style={[{ width: '100%', height: 220 },]} source={{ uri: item?.imageUrl }} />}
+                                <View style={{ padding: 15, backgroundColor: colors.mainColor }}>
+                                    {item?.title ? <Text style={{ color: 'white', fontSize: 16, }}>{item?.title}</Text>
+                                        : <Text style={{ color: 'white', fontSize: 16, }}>{item?.desc}</Text>
+                                    }
+
                                 </View>
-                                <View style={[styles.item]}>
-                                    <Text style={{ color: 'black', fontSize: 16, }}>{item.item.desc}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    }}
-                />
+                            </View>
+
+                        </TouchableOpacity>
+                    )
+                })
+                }
             </View>
-        </SafeAreaView>
+        </ScrollView>
+
     );
 
 }

@@ -48,14 +48,15 @@ export default function AddPostScreen() {
 
         } else {
 
-            getLinkPreview(desc,{timeout: 25000}
+           await getLinkPreview("https://www.facebook.com/100069322297572/videos/805848861084357/",{timeout: 60000}
             ).then(async (linkData:any) => {
-                console.log('====================================');
-                console.log(linkData);
+                console.log('================t====================');
+                console.log(linkData?.images);
                 console.log('====================================');
 
                 // setData(linkData.url);
-                await database().collection('posts')
+                if (linkData?.images){
+                    await database().collection('posts')
                     .add({
                         desc: desc,
                         imageUrl:linkData?.images[0],
@@ -64,6 +65,18 @@ export default function AddPostScreen() {
                         created_at: new Date()
                     })
                     .then(() => console.log('success'));
+                }else{
+                    await database().collection('posts')
+                    .add({
+                        desc: desc,
+                        imageUrl:"",
+                        siteName:"",
+                        title:"",
+                        created_at: new Date()
+                    })
+                    .then(() => console.log('success'));
+                }
+
             })
 
             setDesc('');
@@ -113,10 +126,12 @@ export default function AddPostScreen() {
                                     }
                                 }>
                                 <View style={[styles.item]}>
-                                    <Text style={{ color: 'black', fontSize: 16, }}>{item.item.desc}
-
+                                    <Text style={{ color: 'black', fontSize: 16, }}>{item.item?.desc}
+                                    </Text>
+                                    <Text style={{ color: 'black', fontSize: 16, }}>{item.item?.desc}
                                     </Text>
                                 </View>
+      
                             </Pressable>
 
 
