@@ -1,25 +1,55 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 
-import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, Dimensions, PermissionsAndroid, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerLayout from './src/screens/DrawerLayout';
 import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple(
+        [
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.ACCESS_MEDIA_LOCATION,
+
+        ]
+      );
+      if (granted['android.permission.ACCESS_MEDIA_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
+        // Alert.alert("You can use the location")
+      } else {
+        Alert.alert("Location permission denied");
+      }
+
+      if (granted['android.permission.READ_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED) {
+        // Alert.alert("You can use the location")
+      } else {
+        Alert.alert("Read external storage permission denied");
+      }
+      if (granted['android.permission.WRITE_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED) {
+        // Alert.alert("You can use the location")
+      } else {
+        Alert.alert("Read external storage permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
   useEffect(() => {
     SplashScreen.hide();
-
+    requestCameraPermission();
 
   }, []);
   const { width, height } = Dimensions.get('window');
-  
+
   const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer>
-      <StatusBar 
+      <StatusBar
         animated={true}
         backgroundColor='#030322'
       />

@@ -14,6 +14,8 @@ import { styles } from '../constants/styles';
 import database from '@react-native-firebase/firestore';
 import { colors } from '../constants/colors';
 import { getLinkPreview } from 'link-preview-js';
+import storage from '@react-native-firebase/storage';
+import DocumentPicker from 'react-native-document-picker'
 
 
 
@@ -48,33 +50,33 @@ export default function AddPostScreen() {
 
         } else {
 
-           await getLinkPreview("https://www.facebook.com/100069322297572/videos/805848861084357/",{timeout: 60000}
-            ).then(async (linkData:any) => {
+            await getLinkPreview(desc, { timeout: 60000 }
+            ).then(async (linkData: any) => {
                 console.log('================t====================');
                 console.log(linkData?.images);
                 console.log('====================================');
 
                 // setData(linkData.url);
-                if (linkData?.images){
+                if (linkData?.images) {
                     await database().collection('posts')
-                    .add({
-                        desc: desc,
-                        imageUrl:linkData?.images[0],
-                        siteName:linkData?.description,
-                        title:linkData?.title,
-                        created_at: new Date()
-                    })
-                    .then(() => console.log('success'));
-                }else{
+                        .add({
+                            desc: desc,
+                            imageUrl: linkData?.images[0],
+                            siteName: linkData?.description,
+                            title: linkData?.title,
+                            created_at: new Date()
+                        })
+                        .then(() => console.log('success'));
+                } else {
                     await database().collection('posts')
-                    .add({
-                        desc: desc,
-                        imageUrl:"",
-                        siteName:"",
-                        title:"",
-                        created_at: new Date()
-                    })
-                    .then(() => console.log('success'));
+                        .add({
+                            desc: desc,
+                            imageUrl: "",
+                            siteName: "",
+                            title: "",
+                            created_at: new Date()
+                        })
+                        .then(() => console.log('success'));
                 }
 
             })
@@ -92,16 +94,41 @@ export default function AddPostScreen() {
             .delete()
 
     }
+    const uploadVideo = async () => {
+        // const reference = storage().ref(`videos/Screenshot_20230806-102107.png`);
+        // console.log(reference);
+        
+        try {
+            const doc: any = await DocumentPicker.pick({
+                type: [DocumentPicker.types.images],
+            });
+            // const reference = storage().ref(`videos/`);
+
+            console.log('====================================');
+            console.log(doc);
+            console.log('====================================');
+            
+            await storage().ref(`videos/`).putFile(doc[0]?.uri);
+
+            console.log('Upload successful!');
+        } catch (error) {
+            console.error('Error uploading video:', error);
+        }
+    };
+
 
     return (
         <SafeAreaView>
 
             <View style={[styles.container, { marginBottom: 10 }]}>
+                <View>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer la vidéo pub</Text>
+                    <View >
+                        <Button title='Vidéo' onPress={uploadVideo} color="#2996C9" />
+                    </View>
+                </View>
                 <View style={{ marginBottom: 20 }}>
                     <TextInput value={password} onChangeText={(password) => { setPassword(password); }} style={password == truepassword ? styles.none : styles.input} placeholder="Entrer Le mot de passe " />
-
-
-
                     <TextInput value={desc} onChangeText={(desc) => { setDesc(desc) }} multiline style={[password == truepassword ? styles.input : styles.none, { color: 'black' }]} placeholder="Entrer La Description"
                     />
                     <View style={[{ marginTop: 30 }, password == truepassword ? {} : styles.none]}>
@@ -111,7 +138,8 @@ export default function AddPostScreen() {
 
 
                 <View style={password == truepassword ? styles.input : styles.none}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>Gérer les posts</Text>
+
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer les posts</Text>
                     <FlatList
                         data={data}
                         renderItem={(item: any) => (
@@ -120,9 +148,7 @@ export default function AddPostScreen() {
                                 android_ripple={{ color: 'red' }} onLongPress={
                                     () => {
                                         Vibration.vibrate(100)
-
                                         deletePost(item.item.id)
-
                                     }
                                 }>
                                 <View style={[styles.item]}>
@@ -131,19 +157,11 @@ export default function AddPostScreen() {
                                     <Text style={{ color: 'black', fontSize: 16, }}>{item.item?.desc}
                                     </Text>
                                 </View>
-      
                             </Pressable>
-
-
                         )}
-
                     />
-
                 </View>
-
             </View>
         </SafeAreaView>
-
     );
-
 }
