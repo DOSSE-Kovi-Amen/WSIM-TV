@@ -21,6 +21,7 @@ import storage from '@react-native-firebase/storage';
 import DocumentPicker from 'react-native-document-picker'
 import { utils } from '@react-native-firebase/app';
 import RNFetchBlob from 'rn-fetch-blob';
+import Video from 'react-native-video';
 
 
 
@@ -28,7 +29,7 @@ export default function AddPostScreen() {
 
     const [password, setPassword] = useState('');
     const [desc, setDesc] = useState('');
-    const truepassword = 'ktz@2030';
+    const truepassword = 'nicoL@s';
 
     const [msg, setMsg] = useState('');
     const [data, setData] = useState([]);
@@ -37,14 +38,15 @@ export default function AddPostScreen() {
     const [uploadProgress, setUploadProgress] = useState(0);
 
     const getStorage = async () => {
-        
-         storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
-            // setVideoStore(downloadURL)
-         }).catch((error) => {
-            Alert.alert(error.message)
-         });
 
-   
+        storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
+            console.log(downloadURL);
+
+            setVideoStore(downloadURL)
+        }).catch((error) => {
+            Alert.alert(error.message)
+        });
+
     }
     useEffect(() => {
         getStorage();
@@ -138,13 +140,13 @@ export default function AddPostScreen() {
             console.log(fileUri);
             console.log('====================================');
 
-            const task =  reference.putFile(fileUri);
-            task.on('state_changed', (snapshot:any) => {
+            const task = reference.putFile(fileUri);
+            task.on('state_changed', (snapshot: any) => {
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 setUploadProgress(progress);
                 console.log(progress);
-                
-              });
+
+            });
             task.then(() => {
                 console.log('Image uploaded to the bucket!');
             });
@@ -167,19 +169,38 @@ export default function AddPostScreen() {
                     {loadingPost ?
                         <ActivityIndicator size={80} color="green" />
                         : <View>
-                            <View>
+                            {(password == truepassword) && <View>
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer la vidéo pub</Text>
                                 <View style={{ margin: 10 }} >
                                     <Button title='Vidéo' onPress={uploadVideo} color="#2996C9" />
-                                    <Text style={{ color:'black', fontSize:16, fontWeight:'bold' }}>{`Téléchargement: ${uploadProgress.toFixed(2)}%`}</Text>
+                                    <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>{`Téléchargement: ${uploadProgress.toFixed(2)}%`}</Text>
 
                                 </View>
-                            </View>
-                            <Image style={{ width: '100%', height: 200 }} source={{ uri: videoStore || "http://www.g.png" }} />
-                            <View style={{ marginBottom: 20 }}>
+                                <Video
+                                    source={{ uri: videoStore }}
+                                    onError={() => console.log('Error loading video from cloud storage ')
+                                    }
+                                    resizeMode='contain'
+                                    controls
+                                    fullscreenOrientation='all'
+                                    paused={false}
+                                    style={{ width: '100%', height: 200 }}
+                                // style={styles2.backgroundVideo}
+                                // onLoadStart={() => setIsLoading(true)}
+                                // onLoad={() => setIsLoading(false)}
+                                />{/* <Image style={{ width: '100%', height: 200 }} source={{ uri: videoStore || "http://www.g.png" }} /> */}
+
+                            </View>}
+                            <View style={{ marginBottom: 20, marginTop: 20 }}>
+
                                 <TextInput value={password} onChangeText={(password) => { setPassword(password); }} style={password == truepassword ? styles.none : styles.input} placeholder="Entrer Le mot de passe " />
+
                                 <TextInput value={desc} onChangeText={(desc) => { setDesc(desc) }} multiline style={[password == truepassword ? styles.input : styles.none, { color: 'black' }]} placeholder="Entrer La Description"
                                 />
+                                {(password == truepassword) &&<View style={{ marginTop: 20 }}>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer les posts</Text>
+
+                                </View>}
                                 <View style={[{ marginTop: 30 }, password == truepassword ? {} : styles.none]}>
                                     <Button disabled={(password == truepassword && desc != '') ? false : true} color={colors.mainColor} onPress={create} title="Publier" accessibilityLabel="Publier un lien"></Button>
                                 </View>
@@ -190,7 +211,7 @@ export default function AddPostScreen() {
 
                     <View style={password == truepassword ? styles.input : styles.none}>
 
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer les posts</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Posts</Text>
 
                         {data.map((item: any, index) => {
                             return <Pressable key={index}

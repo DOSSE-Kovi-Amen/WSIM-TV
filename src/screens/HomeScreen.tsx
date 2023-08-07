@@ -34,7 +34,7 @@ const HomeScreen = () => {
         storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
             setVideoStore(downloadURL)
          }).catch((error) => {
-            // Alert.alert(error.message)
+            Alert.alert(error.message)
          });
     }
     useEffect(() => {

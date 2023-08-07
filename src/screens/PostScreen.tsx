@@ -24,10 +24,6 @@ import { PostType } from '../constants/type';
 
 export default function PostScreen() {
 
-    const [password, setPassword] = useState('');
-    const [desc, setDesc] = useState('');
-
-    const [msg, setMsg] = useState('');
     const [datas, setDatas] = useState([]);
 
     useEffect(() => {

@@ -43,8 +43,10 @@ const Radio = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setSecond((prev) => prev + 1);
-        }, 2000)
-
+        }, 1000)
+        return () => {
+            clearInterval(interval);
+          };
     });
 
     const handleVideoError = (e: any) => {
