@@ -5,19 +5,19 @@ import Card from '../components/Card';
 
 export default function ContactScreen() {
   const handleEmailPress = () => {
-    Linking.openURL('mailto:katartizotv@gmail.com');
+    Linking.openURL('mailto:info@worldsalvationintl.org');
   };
 
-  const handlePhonePress = () => {
-    Linking.openURL('tel:+242053112488');
-  };
+  // const handlePhonePress = () => {
+  //   Linking.openURL('tel:+00000');
+  // };
   const handleSitePress = () => {
     Linking.openURL('https://www.worldsalvationintl.org');
   };
 
-  const handleWhatsAppPress = () => {
-    Linking.openURL('whatsapp://send?phone=+242053112488');
-  };
+  // const handleWhatsAppPress = () => {
+  //   Linking.openURL('whatsapp://send?phone=+000');
+  // };
   const handleYoutubePress = () => {
     Linking.openURL('https://www.youtube.com/@worldsalvationintlministri3803/streams');
   };
@@ -32,8 +32,8 @@ export default function ContactScreen() {
 
         <Text style={styles.title}>Contactez-nous :</Text>
 
-        <Card imageSource={require("../assets/phone.png")} text="Appeler sur +242 05 311 2488" onPress={handlePhonePress} />
-        <Card imageSource={require("../assets/whatsapp.png")} text="WhatsApp" onPress={handleWhatsAppPress} />
+        {/* <Card imageSource={require("../assets/phone.png")} text="Appeler sur +242 05 311 2488" onPress={handlePhonePress} /> */}
+        {/* <Card imageSource={require("../assets/whatsapp.png")} text="WhatsApp" onPress={handleWhatsAppPress} /> */}
         <Card icon={'globe-africa'} text="Visiter site web" onPress={handleSitePress} />
 
         <Card imageSource={require("../assets/gmail.png")} text="Envoyer un mail" onPress={handleEmailPress} />

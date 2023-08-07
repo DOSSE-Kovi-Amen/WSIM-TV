@@ -6,12 +6,10 @@ export default function VisionScreen() {
         <View style={styles.container}>
             <ScrollView>
 
-                <Image resizeMode='contain' source={require('../assets/vision.png')} style={styles.image} />
-                <Text style={styles.title}>Notre vision :</Text>
-                <Text style={styles.description}>
-                    La restauration de l’homme par l’action de l’Esprit
-                    (la conversion et la transformation à l’image de Christ).
-                </Text>
+
+            <Text style={styles.title}>Our Vision </Text>
+            <Text style={styles.text}>The Church in the Togo’s is rising to send missionaries to the world. This ministry is dedicated to the evangelization and discipleship of Togo and other West African nations through evangelistic crusades, teaching seminars, various media outreaches, and the planting of New Churches and Bible Schools.
+            </Text>
             </ScrollView>
 
         </View>
@@ -23,6 +21,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
+    },
+    text: {
+        fontSize: 18,
+        textAlign: 'justify',
+        marginTop: 5,
+        color: 'black',
     },
     image: {
         width: '100%',

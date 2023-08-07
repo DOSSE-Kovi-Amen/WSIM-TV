@@ -32,15 +32,19 @@ export default function AddPostScreen() {
 
     const [msg, setMsg] = useState('');
     const [data, setData] = useState([]);
-    const [imgStore, setImgStore] = useState("");
+    const [videoStore, setVideoStore] = useState("");
     const [loadingPost, setLoadingPost] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const getStorage = async () => {
-        const reference = await storage().ref(`files/pub.mp4`).getDownloadURL();
+        
+         storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
+            // setVideoStore(downloadURL)
+         }).catch((error) => {
+            Alert.alert(error.message)
+         });
 
-        if (reference) {
-            setImgStore(reference)
-        }
+   
     }
     useEffect(() => {
         getStorage();
@@ -106,8 +110,6 @@ export default function AddPostScreen() {
                 Alert.alert("Saisissez une url valide")
             })
 
-
-
             setDesc('');
         }
 
@@ -129,23 +131,20 @@ export default function AddPostScreen() {
 
             console.log(doc[0]?.uri);
             const reference = storage().ref(`files/pub.mp4`);
-            setImgStore(doc[0]?.uri);
+            setVideoStore(doc[0]?.uri);
             const fileUri = await getPathForFirebaseStorage(doc[0]?.uri)
 
             console.log('====================================');
             console.log(fileUri);
             console.log('====================================');
 
-            const task = await reference.putFile(fileUri).catch((err) => {
-
-                console.log('====================================');
-                console.log(err);
-                console.log('====================================');
-            });
-            task.on('state_changed', (taskSnapshot: any) => {
-                console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
-            });
-
+            const task =  reference.putFile(fileUri);
+            task.on('state_changed', (snapshot:any) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setUploadProgress(progress);
+                console.log(progress);
+                
+              });
             task.then(() => {
                 console.log('Image uploaded to the bucket!');
             });
@@ -172,9 +171,11 @@ export default function AddPostScreen() {
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer la vidéo pub</Text>
                                 <View style={{ margin: 10 }} >
                                     <Button title='Vidéo' onPress={uploadVideo} color="#2996C9" />
+                                    <Text style={{ color:'black', fontSize:16, fontWeight:'bold' }}>{`Téléchargement: ${uploadProgress.toFixed(2)}%`}</Text>
+
                                 </View>
                             </View>
-                            <Image style={{ width: '100%', height: 200 }} source={{ uri: imgStore || "http://www.g.png" }} />
+                            <Image style={{ width: '100%', height: 200 }} source={{ uri: videoStore || "http://www.g.png" }} />
                             <View style={{ marginBottom: 20 }}>
                                 <TextInput value={password} onChangeText={(password) => { setPassword(password); }} style={password == truepassword ? styles.none : styles.input} placeholder="Entrer Le mot de passe " />
                                 <TextInput value={desc} onChangeText={(desc) => { setDesc(desc) }} multiline style={[password == truepassword ? styles.input : styles.none, { color: 'black' }]} placeholder="Entrer La Description"

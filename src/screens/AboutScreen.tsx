@@ -6,17 +6,14 @@ export default function AboutScreen() {
         <View style={styles.container}>
             <ScrollView>
 
-            <Text style={styles.title}>Qui sommes nous?</Text>
-            <Text style={styles.text}>
-                <Text style={{ fontWeight: 'bold', color: 'black' }}>KATARTIZO</Text> est une association chrétienne qui s'aligne dans la vision globale de l'Eglise (celle de faire de toutes les nations des disciples Matthieu 28:18-20), particulièrement dans la conquête des âmes et l'équipement des chrétiens pour l'oeuvre du ministère.
+            <Text style={styles.title}>Our Vision </Text>
+            <Text style={styles.text}>The Church in the Togo’s is rising to send missionaries to the world. This ministry is dedicated to the evangelization and discipleship of Togo and other West African nations through evangelistic crusades, teaching seminars, various media outreaches, and the planting of New Churches and Bible Schools.
             </Text>
-            <Text style={styles.text}>C'est vraiment dans le cadre de l'oeuvre du Seigneur qui vise la restauration de l'homme selon le plan de Dieu, à savoir.
+            <Text style={styles.title}>Our mission </Text>
+
+            <Text style={styles.text}>To evangelize the people of Togo, and the French-speaking countries of West Africa, teaching the Christians to spread the gospel and heal the sick everywhere.
             </Text>
-            <Text style={styles.text}>
-                &#8226; Sa conversion (Matthieu 28v19; Marc 16v15).{'\n'}
-                &#8226; Son perfectionnement ou sa transformation à l'image de Christ (Matthieu 28v20 Ephésiens 4v11-14 ){'\n'}
-            </Text>
-           
+     
             </ScrollView>
 
         </View>
@@ -39,7 +36,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 18,
         textAlign: 'justify',
-        marginTop: 5
+        marginTop: 5,
+        color: 'black',
     },
     list: {
         fontSize: 18,
