@@ -7,17 +7,19 @@ import {
     Text,
     ScrollView,
     RefreshControl,
+    Dimensions,
+    Button,
 } from 'react-native';
 // import YoutubeIframe from 'react-native-youtube-iframe';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Feather';
+import WebView from 'react-native-webview';
+import TrackPlayer from 'react-native-track-player';
 
 
 const Radio = () => {
-    const [paused, setPaused] = useState(true);
-    const navigation: any = useNavigation();
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -33,12 +35,15 @@ const Radio = () => {
     }, []);
 
     useEffect(() => {
-        if (!isFocused) {
-            setPaused(true);
-        } else {
-            setPaused(false);
-        }
+        onFocusedAndOut();
     }, [isFocused]);
+    const onFocusedAndOut = () => {
+        if (!isFocused) {
+            TrackPlayer.pause();
+        } else {
+            TrackPlayer.play();
+        }
+    }
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -46,13 +51,9 @@ const Radio = () => {
         }, 1000)
         return () => {
             clearInterval(interval);
-          };
+        };
     });
 
-    const handleVideoError = (e: any) => {
-        console.log('Video error:', e);
-        setVideoError(true);
-    };
 
     var styles2 = StyleSheet.create({
         backgroundVideo: {
@@ -76,6 +77,42 @@ const Radio = () => {
         },
     });
 
+    useEffect(() => {
+        // setupTrackPlayer();
+        return () => {
+            TrackPlayer.pause();
+        };
+    }, []);
+
+    const setupTrackPlayer = async () => {
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add({
+            id: 'radio',
+            url: 'http://vps89738.serveur-vps.net:8000/radiowsim',
+            title: 'Radio WSIM',
+        });
+        TrackPlayer.updateOptions({
+            stopWithApp: false, // Garde la lecture en arrière-plan lorsque l'application est fermée
+        });
+    };
+    const playRadio = async () => {
+        await TrackPlayer.play();
+    };
+
+    const pauseRadio = async () => {
+        await TrackPlayer.pause();
+    };
+    const styles = StyleSheet.create({
+        container: {
+            // flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        controls: {
+            flexDirection: 'row',
+            marginTop: 20,
+        },
+    });
     return (
         <ScrollView
             contentContainerStyle={styles2.scrollView}
@@ -83,37 +120,28 @@ const Radio = () => {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-                {!videoError ? (
-                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-
-                        <Video
-                            source={{ uri: "http://vps89738.serveur-vps.net:8000/radiowsim" }}
-                            onError={handleVideoError}
-                            resizeMode='contain'
-                            controls
-                            fullscreenOrientation='all'
-                            paused={paused}
-                            style={styles2.backgroundVideo}
-                            onLoadStart={() => setIsLoading(true)}
-                            onLoad={() => setIsLoading(false)}
-                        />
-                        {!videoError&&<View style={{ position: 'absolute', top: 100 }}>
-                            <Icon2 name='radio' color={second % 2 == 0 ? '#FFFFFF9C' : '#FFDD0031'} size={second % 2 == 0 ? 190 : 200} />
-                        </View>}
-                        <Icon name='radio' color='#FFFFFF9C' size={160} />
+                <View style={{ height:150,flexDirection:'row', justifyContent:'center' }}>
+                    <Icon2 name='radio' color={second % 2 == 0 ? '#FFFFFF9C' : '#FFDD00'} size={second % 2 == 0 ? 170 : 190} />
+                </View>
+                <View style={{ height:200,flexDirection:'row', justifyContent:'center' }}>
+                    <Icon name='radio' color='#0F0000' size={140} />
+                </View>
+                <View style={styles.container}>
+                    <Text>Radio WSIM</Text>
+                    <View style={styles.controls}>
+                        <Button title="Play" onPress={playRadio} />
+                        <View style={{ width: 15 }}></View>
+                        <Button title="Pause" onPress={pauseRadio} />
                     </View>
-
-                ) : (
-                    <Text style={{ color:'white', fontSize:17, fontWeight:'bold'  }}>Error loading the Radio.</Text>
-                )}
-                {isLoading && (
+                </View>
+                {/* {isLoading && (
                     <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ backgroundColor: 'black', height: '100%', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                             <ActivityIndicator size={80} color="green" />
                             <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
                         </View>
                     </View>
-                )}
+                )} */}
             </View>
         </ScrollView>
 

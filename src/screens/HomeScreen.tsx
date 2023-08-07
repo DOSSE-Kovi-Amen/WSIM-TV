@@ -7,11 +7,13 @@ import {
     Text,
     ScrollView,
     RefreshControl,
+    Dimensions,
 } from 'react-native';
 // import YoutubeIframe from 'react-native-youtube-iframe';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Video from 'react-native-video';
 import storage from '@react-native-firebase/storage';
+import WebView from 'react-native-webview';
 
 
 const HomeScreen = () => {
@@ -39,6 +41,9 @@ const HomeScreen = () => {
     }
     useEffect(() => {
         getStorage();
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 2000);
         if (!isFocused) {
             setPaused(true);
         } else {
@@ -47,7 +52,7 @@ const HomeScreen = () => {
     }, [isFocused]);
 
     const handleVideoError = (e: any) => {
-        console.log('Video error:', e);
+        console.log('Video error:');
         setVideoError(true);
     };
 
@@ -71,7 +76,17 @@ const HomeScreen = () => {
 
         },
     });
-
+    const styles3 = StyleSheet.create({
+        container: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+        video: {
+          width: Dimensions.get('window').width,
+          height: 200,
+        },
+      });
     return (
         <ScrollView
             contentContainerStyle={styles2.scrollView}
@@ -79,35 +94,42 @@ const HomeScreen = () => {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-                {!videoError ? (
-                    <Video
+                {(!videoError ? (
+                    <WebView
+                    
                         source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
-                        onError={handleVideoError}
-                        resizeMode='contain'
-                        controls
-                        fullscreenOrientation='all'
-                        paused={paused}
-                        style={styles2.backgroundVideo}
-                        onLoadStart={() => setIsLoading(true)}
-                        onLoad={() => setIsLoading(false)}
+                        // onError={handleVideoError}
+                        onHttpError={handleVideoError}
+                        startInLoadingState={true}
+                        // paused={paused}
+                        style={styles3.video}
+                        // onLoadStart={() => setIsLoading(true)
+                        // }
+                        onLoadEnd={() => setIsLoading(false)}
+                        // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
+
                     />
+                    
                 ) : (
-                    <Video
-                        source={{ uri: videoStore }}
-                        onError={()=> console.log('Error loading video from cloud storage ')
-                        }
-                        resizeMode='contain'
-                        controls
-                        fullscreenOrientation='all'
-                        paused={paused}
-                        style={styles2.backgroundVideo}
-                        onLoadStart={() => setIsLoading(true)}
-                        onLoad={() => setIsLoading(false)}
-                    />)}
+                    
+                    <WebView
+                    
+                    source={{ uri: videoStore }}
+                    // onError={handleVideoError}
+                    onHttpError={handleVideoError}
+                    startInLoadingState={true}
+                    // paused={paused}
+                    style={styles3.video}
+                    // onLoadStart={() => setIsLoading(true)
+                    // }
+                    onLoadEnd={() => setIsLoading(false)}
+                    // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
+
+                />))}
                 {isLoading && (
                     <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={80} color="green" />
+                            <ActivityIndicator size={60} color="green" />
                             <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
                         </View>
                     </View>

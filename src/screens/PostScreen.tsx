@@ -37,10 +37,6 @@ export default function PostScreen() {
 
                 const finalData = Object.assign(id, data);
                 todoList.push(finalData);
-
-                console.log('=================post===================');
-                console.log(finalData);
-                console.log('====================================');
             });
             setDatas(todoList);
 
