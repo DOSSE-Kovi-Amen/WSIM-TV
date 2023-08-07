@@ -5,6 +5,8 @@ import {
     Alert,
     ActivityIndicator,
     Text,
+    ScrollView,
+    RefreshControl,
 } from 'react-native';
 // import YoutubeIframe from 'react-native-youtube-iframe';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -16,21 +18,29 @@ const HomeScreen = () => {
     const navigation: any = useNavigation();
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true);
-
+    const [refreshing, setRefreshing] = useState(false);
+    const [videoError, setVideoError] = useState(false);
+  
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      setVideoError(false); // Reset video error indicator
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
+    }, []);
+  
     useEffect(() => {
-        if (!isFocused) {
-            setPaused(true);
-
-        } else {
-            setPaused(false);
-
-        }
-        console.log('====================================');
-        console.log(paused);
-        console.log('====================================');
+      if (!isFocused) {
+        setPaused(true);
+      } else {
+        setPaused(false);
+      }
     }, [isFocused]);
-
-
+  
+    const handleVideoError = (e: any) => {
+      console.log('Video error:', e);
+      setVideoError(true);
+    };
 
     var styles2 = StyleSheet.create({
         backgroundVideo: {
@@ -40,43 +50,52 @@ const HomeScreen = () => {
             bottom: 0,
             right: 0,
         },
+        container: {
+            flex: 1,
+          },
+          scrollView: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
         activityIndicator: {
 
         },
     });
 
     return (
+        <ScrollView
+      contentContainerStyle={styles2.scrollView}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+      <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
+        {!videoError ? (
+          <Video
+            source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
+            onError={handleVideoError}
+            resizeMode='contain'
+            controls
+            fullscreenOrientation='all'
+            paused={paused}
+            style={styles2.backgroundVideo}
+            onLoadStart={() => setIsLoading(true)}
+            onLoad={() => setIsLoading(false)}
+          />
+        ) : (
+          <Text>Error loading the video.</Text>
+        )}
+        {isLoading && (
+          <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size={80} color="green" />
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
+            </View>
+          </View>
+        )}
+      </View>
+    </ScrollView>
 
-        <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-            <Video source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}   // Can be a URL or a local file.
-                // ref={(ref) => {
-                //     this.player = ref
-                // }}                                      // Store reference
-                // onBuffer={this.onBuffer}                // Callback when remote video is buffering
-                onError={(e: any) => { Alert.alert("Vérifiez votre connexion internet! Ou peut-être la diffusion Live a cessé") }}               // Callback when video cannot be loaded
-                resizeMode='contain'
-                // fullscreen
-                controls
-                fullscreenOrientation='all'
-                paused={paused}
-                style={styles2.backgroundVideo}
-                onLoadStart={() => setIsLoading(true)}
-                onLoad={() => setIsLoading(false)}
-
-            />
-            {isLoading && <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-
-                    {/* <Text>gfg</Text> */}
-                    <ActivityIndicator size={80} color="green" />
-                    <Text style={{color:'white', fontSize:16, fontWeight:'bold' }}>Chargement en cours...</Text>
-
-                </View>
-
-            </View>}
-
-
-        </View>
     );
 }
 

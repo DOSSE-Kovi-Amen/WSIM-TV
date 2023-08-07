@@ -32,7 +32,7 @@ export default function PostScreen() {
 
     useEffect(() => {
 
-        database().collection('posts').orderBy('created_at', 'desc').onSnapshot((querySnapshot) => {
+        const subscriber = database().collection('posts').orderBy('created_at', 'desc').onSnapshot((querySnapshot) => {
             const todos = querySnapshot.docs;
             const todoList: any = [];
             todos.forEach(element => {
@@ -49,6 +49,8 @@ export default function PostScreen() {
             setDatas(todoList);
 
         });
+        // Stop listening for updates when no longer required
+        return () => subscriber();
     }, []);
 
 

@@ -20,6 +20,7 @@ import { getLinkPreview } from 'link-preview-js';
 import storage from '@react-native-firebase/storage';
 import DocumentPicker from 'react-native-document-picker'
 import { utils } from '@react-native-firebase/app';
+import RNFetchBlob from 'rn-fetch-blob';
 
 
 
@@ -34,9 +35,17 @@ export default function AddPostScreen() {
     const [imgStore, setImgStore] = useState("");
     const [loadingPost, setLoadingPost] = useState(false);
 
-    useEffect(() => {
+    const getStorage = async () => {
+        const reference = await storage().ref(`files/pub.mp4`).getDownloadURL();
 
-        database().collection('posts').orderBy('created_at', 'desc').onSnapshot((querySnapshot) => {
+        if (reference) {
+            setImgStore(reference)
+        }
+    }
+    useEffect(() => {
+        getStorage();
+
+        const subscriber = database().collection('posts').orderBy('created_at', 'desc').onSnapshot((querySnapshot) => {
             const todos = querySnapshot.docs;
             const todoList: any = [];
             todos.forEach(element => {
@@ -47,6 +56,7 @@ export default function AddPostScreen() {
             });
             setData(todoList);
         });
+        return () => subscriber();
     }, []);
 
     async function create() {
@@ -104,35 +114,52 @@ export default function AddPostScreen() {
     }
     const deletePost = async (postId: string) => {
         Vibration.vibrate(100)
-
         await database()
             .collection('posts')
             .doc(postId)
             .delete()
-
     }
-    const uploadVideo = async () => {
-        // const reference = storage().ref(`videos/Screenshot_20230806-102107.png`);
-        // console.log(reference);
 
+    const uploadVideo = async () => {
         try {
             const doc: any = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
+                type: [DocumentPicker.types.video],
             });
-            const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/black-t-shirt-sm.png`;
-            console.log('====================================');
-            console.log(pathToFile);
-            console.log('====================================');
-            const reference = storage().ref(`images/1.png`);
-            setImgStore(doc[0]?.uri);
-            await reference.putFile(doc[0]?.uri);
 
+
+            console.log(doc[0]?.uri);
+            const reference = storage().ref(`files/pub.mp4`);
+            setImgStore(doc[0]?.uri);
+            const fileUri = await getPathForFirebaseStorage(doc[0]?.uri)
+
+            console.log('====================================');
+            console.log(fileUri);
+            console.log('====================================');
+
+            const task = await reference.putFile(fileUri).catch((err) => {
+
+                console.log('====================================');
+                console.log(err);
+                console.log('====================================');
+            });
+            task.on('state_changed', (taskSnapshot: any) => {
+                console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+            });
+
+            task.then(() => {
+                console.log('Image uploaded to the bucket!');
+            });
             console.log('Upload successful!');
-        } catch (error) {
-            console.error('Error uploading video:', error);
+        } catch (error: any) {
+            Alert.alert(error?.message);
+            // console.error('Error uploading video:', error);
         }
     };
-
+    async function getPathForFirebaseStorage(uri: any) {
+        // if (IS_IOS) return uri
+        const stat = await RNFetchBlob.fs.stat(uri)
+        return stat.path
+    }
 
     return (
         <SafeAreaView>
@@ -143,11 +170,11 @@ export default function AddPostScreen() {
                         : <View>
                             <View>
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer la vidéo pub</Text>
-                                <View style={{ margin:10 }} >
+                                <View style={{ margin: 10 }} >
                                     <Button title='Vidéo' onPress={uploadVideo} color="#2996C9" />
                                 </View>
                             </View>
-                            <Image style={{ width: 200, height: 200 }} source={{ uri: imgStore || "http://www.g.png" }} />
+                            <Image style={{ width: '100%', height: 200 }} source={{ uri: imgStore || "http://www.g.png" }} />
                             <View style={{ marginBottom: 20 }}>
                                 <TextInput value={password} onChangeText={(password) => { setPassword(password); }} style={password == truepassword ? styles.none : styles.input} placeholder="Entrer Le mot de passe " />
                                 <TextInput value={desc} onChangeText={(desc) => { setDesc(desc) }} multiline style={[password == truepassword ? styles.input : styles.none, { color: 'black' }]} placeholder="Entrer La Description"
@@ -185,7 +212,7 @@ export default function AddPostScreen() {
 
                     </View>
                 </View>
-                <View style={{ height:200 }}>
+                <View style={{ height: 200 }}>
 
                 </View>
             </ScrollView>
