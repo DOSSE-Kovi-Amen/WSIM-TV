@@ -17,8 +17,6 @@ import WebView from 'react-native-webview';
 
 
 const HomeScreen = () => {
-    const [paused, setPaused] = useState(true);
-    const navigation: any = useNavigation();
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -44,11 +42,7 @@ const HomeScreen = () => {
         setTimeout(() => {
             setIsLoading(false)
         }, 2000);
-        if (!isFocused) {
-            setPaused(true);
-        } else {
-            setPaused(false);
-        }
+
     }, [isFocused]);
 
     const handleVideoError = (e: any) => {

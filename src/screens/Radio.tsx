@@ -78,7 +78,7 @@ const Radio = () => {
     });
 
     useEffect(() => {
-        // setupTrackPlayer();
+        setupTrackPlayer();
         return () => {
             TrackPlayer.pause();
         };
@@ -92,7 +92,7 @@ const Radio = () => {
             title: 'Radio WSIM',
         });
         TrackPlayer.updateOptions({
-            stopWithApp: false, // Garde la lecture en arrière-plan lorsque l'application est fermée
+            // stopWithApp: false, // Garde la lecture en arrière-plan lorsque l'application est fermée
         });
     };
     const playRadio = async () => {
@@ -127,11 +127,11 @@ const Radio = () => {
                     <Icon name='radio' color='#0F0000' size={140} />
                 </View>
                 <View style={styles.container}>
-                    <Text>Radio WSIM</Text>
+                    <Text style={{ fontSize:25, fontWeight:'bold', color:'black'  }}>Radio WSIM</Text>
                     <View style={styles.controls}>
-                        <Button title="Play" onPress={playRadio} />
+                        <Button title="Jouer" onPress={playRadio} color='#528CBD'/>
                         <View style={{ width: 15 }}></View>
-                        <Button title="Pause" onPress={pauseRadio} />
+                        <Button title="Pause" onPress={pauseRadio} color='#E41D1D'/>
                     </View>
                 </View>
                 {/* {isLoading && (
