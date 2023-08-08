@@ -15,13 +15,6 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Feather';
-import WebView from 'react-native-webview';
-import TrackPlayer from 'react-native-track-player';
-import storage from '@react-native-firebase/storage';
-import { SucceedSound } from '../providers/Sound';
-import Sound from 'react-native-sound';
-
-
 const Radio = () => {
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +29,7 @@ const Radio = () => {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setRadioError(false); // Reset video error indicator
+        setPause(false);
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);
@@ -53,7 +47,7 @@ const Radio = () => {
     }, [isFocused]);
 
     useEffect(() => {
-        onFocusedAndOut();
+        // onFocusedAndOut();
     }, [isFocused]);
     const onFocusedAndOut = () => {
         if (!isFocused) {
@@ -68,31 +62,30 @@ const Radio = () => {
             setPause(false)
         }
     }
-    const getStorage = async () => {
-        storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
-            console.log('====================================');
-            console.log(downloadURL);
-            console.log('====================================');
-            setVideoStore(downloadURL)
-        }).catch((error) => {
-            Alert.alert(error.message)
-        });
-    }
+    // const getStorage = async () => {
+    //     storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
+    //         console.log('====================================');
+    //         console.log(downloadURL);
+    //         console.log('====================================');
+    //         setVideoStore(downloadURL)
+    //     }).catch((error) => {
+    //         Alert.alert(error.message)
+    //     });
+    // }
     useEffect(() => {
-        getStorage();
         setTimeout(() => {
             setIsLoading(false)
         }, 2000);
 
     }, [isFocused]);
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setSecond((prev) => prev + 1);
-        }, 1000)
-        return () => {
-            clearInterval(interval);
-        };
-    });
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setSecond((prev) => prev + 1);
+    //     }, 1000)
+    //     return () => {
+    //         clearInterval(interval);
+    //     };
+    // },[isFocused]);
 
     var styles2 = StyleSheet.create({
         backgroundVideo: {
@@ -136,7 +129,11 @@ const Radio = () => {
         },
     });
     const handleRadioError = (e: any) => {
+        // getStorage();
+        console.log('ger');
+        
         setRadioError(true);
+        setPause(true);
     };
     return (
         <ScrollView
@@ -144,27 +141,27 @@ const Radio = () => {
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-
-            {!radioError ?
+            {/* <Video
+                ref={videoRef}
+                source={{ uri: "http://vps89738.serveur-vps.net:8000/radiowsim" }}
+                paused={pause}
+                style={{  }}
+                onBuffer={handleRadioError}                // Callback when remote video is buffering
+                onError={handleRadioError}
+                onLoadStart={() => {
+                    console.log('load');
+                    setRadioError(false)
+                }}
+                onLoad={() => {
+                    console.log('load end');
+                    setRadioError(false)
+                }}
+            // Autres propriétés et gestionnaires d'événements ici
+            /> */}
+            {/* { */}
+            {/* !radioError ? */}
                 <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-                    <Video
-                        ref={videoRef}
-                        source={{ uri: "http://vps89738.serveur-vps.net:8000/radiowsim" }}
-                        paused={pause}
-                        onBuffer={handleRadioError}                // Callback when remote video is buffering
-                        onError={handleRadioError}
-                        onLoadStart={() => {
-                            console.log('load');
 
-                            setRadioError(true)
-                        }}
-                        onLoad={() => {
-                            console.log('load');
-
-                            setRadioError(false)
-                        }}
-                    // Autres propriétés et gestionnaires d'événements ici
-                    />
                     <View style={{ height: 150, flexDirection: 'row', justifyContent: 'center' }}>
                         <Icon2 name='radio' color={second % 2 == 0 ? '#FFFFFF9C' : '#FFDD00'} size={second % 2 == 0 ? 170 : 190} />
                     </View>
@@ -188,7 +185,7 @@ const Radio = () => {
                     </View>
                 )} */}
                 </View>
-                : <WebView
+                {/* // : <WebView
 
                     source={{ uri: videoStore }}
                     // onError={handleradioError}
@@ -201,7 +198,8 @@ const Radio = () => {
                     onLoadEnd={() => setIsLoading(false)}
                 // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
 
-                />}
+                /> */}
+                {/* } */}
             {/*  */}
         </ScrollView>
 

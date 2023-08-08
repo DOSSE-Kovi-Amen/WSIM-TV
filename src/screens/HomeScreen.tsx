@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     StyleSheet,
     View,
@@ -8,12 +8,16 @@ import {
     ScrollView,
     RefreshControl,
     Dimensions,
+    TouchableOpacity,
+    Button,
 } from 'react-native';
 // import YoutubeIframe from 'react-native-youtube-iframe';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import Video from 'react-native-video';
 import storage from '@react-native-firebase/storage';
 import WebView from 'react-native-webview';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { colors } from '../constants/colors';
 
 
 const HomeScreen = () => {
@@ -22,13 +26,17 @@ const HomeScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [videoError, setVideoError] = useState(false);
     const [videoStore, setVideoStore] = useState("");
+    const videoRef2 = useRef(null);
+    const nav:any = useNavigation();
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        setVideoError(false); // Reset video error indicator
+        setVideoError(false);
+        setIsLoading(true) // Reset video error indicator
         setTimeout(() => {
             setRefreshing(false);
-        }, 2000);
+            setIsLoading(false);
+        }, 3000);
     }, []);
     const getStorage = async () => {
         storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
@@ -38,100 +46,44 @@ const HomeScreen = () => {
         });
     }
     useEffect(() => {
-        getStorage();
         setTimeout(() => {
             setIsLoading(false)
         }, 2000);
 
     }, [isFocused]);
 
-    const handleVideoError = (e: any) => {
-        console.log('Video error:');
-        setVideoError(true);
-    };
-
-    var styles2 = StyleSheet.create({
-        backgroundVideo: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-        },
-        container: {
-            flex: 1,
-        },
-        scrollView: {
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        activityIndicator: {
-
-        },
-    });
-    const styles3 = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        video: {
-            width: Dimensions.get('window').width,
-            height: 200,
-        },
-    });
     return (
-        <ScrollView
-            contentContainerStyle={styles2.scrollView}
+        <ScrollView style={{ flex: 1, padding:25,marginTop:50 }}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-            <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-                {(!videoError ? (
-                    <WebView
-                        source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
-                        // onError={handleVideoError}
-                        onHttpError={handleVideoError}
-                        startInLoadingState={true}
-                        // paused={paused}
-                        style={styles3.video}
-                        // onLoadStart={() => setIsLoading(true)
-                        // }
-                        onLoadEnd={() => setIsLoading(false)}
-                    // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
-
-                    />
-
-                ) : (
-
-                    <WebView
-
-                        source={{ uri: videoStore }}
-                        // onError={handleVideoError}
-                        onHttpError={handleVideoError}
-                        startInLoadingState={true}
-                        // paused={paused}
-                        style={styles3.video}
-                        // onLoadStart={() => setIsLoading(true)
-                        // }
-                        onLoadEnd={() => setIsLoading(false)}
-                    // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
-
-                    />))}
-                {isLoading && (
-                    <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={60} color="green" />
-                            <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
-                        </View>
-                    </View>
-                )}
-            </View>
+            <TouchableOpacity onPress={()=> nav.navigate('video')}>
+                <View style={styles.card}>
+                    <FontAwesome name="tv" size={250} color="white" style={{ marginBottom:35 }} />
+                    <Button title='Cliquer pour Suivre' color="gold" />
+                </View>
+            </TouchableOpacity>
+            
         </ScrollView>
-
     );
 }
 
 export default HomeScreen
 
+const styles = StyleSheet.create({
+    card: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: 16,
+        borderWidth: 1,
+        borderColor: 'lightgray',
+        backgroundColor:colors.mainColor,
+        borderRadius: 15,
+        marginBottom: 8,
+    },
+    title: {
+        marginLeft: 8,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+});

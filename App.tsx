@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerLayout from './src/screens/DrawerLayout';
 import SplashScreen from 'react-native-splash-screen';
+import VideoScreen from './src/screens/VideoScreen';
 // import TrackPlayer, { State } from 'react-native-track-player';
 
 const App = () => {
@@ -18,9 +19,6 @@ const App = () => {
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
           PermissionsAndroid.PERMISSIONS.ACCESS_MEDIA_LOCATION,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
 
 
         ]
@@ -61,8 +59,14 @@ const App = () => {
         animated={true}
         backgroundColor='#030322'
       />
-      <Stack.Navigator initialRouteName="drawer">
+      <Stack.Navigator initialRouteName="drawer"
+        screenOptions={{
+          animation: 'slide_from_right', // Utilisez l'animation de slide de côté à côté
+        }}
+      >
         <Stack.Screen name="drawer" component={DrawerLayout} options={{ headerShown: false }} />
+        <Stack.Screen name="video" component={VideoScreen} options={{ headerShown: false }} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
