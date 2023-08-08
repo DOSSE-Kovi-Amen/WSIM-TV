@@ -47,7 +47,7 @@ const Radio = () => {
     }, [isFocused]);
 
     useEffect(() => {
-        // onFocusedAndOut();
+        onFocusedAndOut();
     }, [isFocused]);
     const onFocusedAndOut = () => {
         if (!isFocused) {
@@ -62,30 +62,21 @@ const Radio = () => {
             setPause(false)
         }
     }
-    // const getStorage = async () => {
-    //     storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
-    //         console.log('====================================');
-    //         console.log(downloadURL);
-    //         console.log('====================================');
-    //         setVideoStore(downloadURL)
-    //     }).catch((error) => {
-    //         Alert.alert(error.message)
-    //     });
-    // }
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 2000);
 
-    }, [isFocused]);
     // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setSecond((prev) => prev + 1);
-    //     }, 1000)
-    //     return () => {
-    //         clearInterval(interval);
-    //     };
-    // },[isFocused]);
+    //     setTimeout(() => {
+    //         setIsLoading(false)
+    //     }, 2000);
+
+    // }, [isFocused]);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSecond((prev) => prev + 1);
+        }, 1000)
+        return () => {
+            clearInterval(interval);
+        };
+    }, [isFocused]);
 
     var styles2 = StyleSheet.create({
         backgroundVideo: {
@@ -115,6 +106,8 @@ const Radio = () => {
 
     const pauseRadio = async () => {
         setPause(true);
+        console.log('pause');
+
 
     };
     const styles = StyleSheet.create({
@@ -131,7 +124,7 @@ const Radio = () => {
     const handleRadioError = (e: any) => {
         // getStorage();
         console.log('ger');
-        
+        Alert.alert("Radio éteinte.")
         setRadioError(true);
         setPause(true);
     };
@@ -141,66 +134,49 @@ const Radio = () => {
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-            {/* <Video
+            <Video
                 ref={videoRef}
                 source={{ uri: "http://vps89738.serveur-vps.net:8000/radiowsim" }}
                 paused={pause}
-                style={{  }}
+                style={{ position: "absolute", width: 5, height: 5, zIndex: 15 }}
                 onBuffer={handleRadioError}                // Callback when remote video is buffering
                 onError={handleRadioError}
                 onLoadStart={() => {
-                    console.log('load');
-                    setRadioError(false)
+                    console.log('load Radio');
+                    setIsLoading(true)
                 }}
                 onLoad={() => {
-                    console.log('load end');
-                    setRadioError(false)
+                    console.log('load Radio end');
+                    setIsLoading(false)
                 }}
             // Autres propriétés et gestionnaires d'événements ici
-            /> */}
-            {/* { */}
-            {/* !radioError ? */}
-                <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
+            />
 
-                    <View style={{ height: 150, flexDirection: 'row', justifyContent: 'center' }}>
-                        <Icon2 name='radio' color={second % 2 == 0 ? '#FFFFFF9C' : '#FFDD00'} size={second % 2 == 0 ? 170 : 190} />
-                    </View>
-                    <View style={{ height: 200, flexDirection: 'row', justifyContent: 'center' }}>
-                        <Icon name='radio' color='#0F0000' size={140} />
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'black' }}>Radio WSIM</Text>
-                        <View style={styles.controls}>
-                            <Button title="Jouer" onPress={playRadio} color='#528CBD' />
-                            <View style={{ width: 15 }}></View>
-                            <Button title="Pause" onPress={pauseRadio} color='#E41D1D' />
-                        </View>
-                    </View>
-                    {/* {isLoading && (
-                    <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ backgroundColor: 'black', height: '100%', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={80} color="green" />
-                            <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
-                        </View>
-                    </View>
-                )} */}
+            <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
+
+                <View style={{ height: 150, flexDirection: 'row', justifyContent: 'center' }}>
+                    <Icon2 name='radio' color={second % 2 == 0 ? '#FFFFFF9C' : '#FFDD00'} size={second % 2 == 0 ? 170 : 190} />
                 </View>
-                {/* // : <WebView
+                <View style={{ height: 200, flexDirection: 'row', justifyContent: 'center' }}>
+                    <Icon name='radio' color='#0F0000' size={140} />
+                </View>
+                <View style={styles.container}>
+                    <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'black' }}>Radio WSIM</Text>
+                    <View style={styles.controls}>
+                        <Button title="Jouer" onPress={playRadio} color='#528CBD' />
+                        <View style={{ width: 15 }}></View>
+                        <Button title="Pause" onPress={pauseRadio} color='#E41D1D' />
+                    </View>
+                </View>
+                {isLoading && (
+                    <View style={{  height: 100, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size={80} color="green" />
+                        <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>Chargement de la radio en cours...</Text>
+                    </View>
+                )}
 
-                    source={{ uri: videoStore }}
-                    // onError={handleradioError}
-                    // onHttpError={handleradioError}
-                    startInLoadingState={true}
-                    // paused={paused}
-                    style={{ width: 1000, height: 2000 }}
-                    // onLoadStart={() => setIsLoading(true)
-                    // }
-                    onLoadEnd={() => setIsLoading(false)}
-                // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
+            </View>
 
-                /> */}
-                {/* } */}
-            {/*  */}
         </ScrollView>
 
     );

@@ -48,12 +48,12 @@ const VideoScreen = () => {
         console.log('just for test');
 
     })
-    useEffect(() => {
-        // setTimeout(() => {
-        //     setIsLoading(false)
-        // }, 4000);
+    // useEffect(() => {
+    //     // setTimeout(() => {
+    //     //     setIsLoading(false)
+    //     // }, 4000);
 
-    }, [isFocused]);
+    // }, [isFocused]);
 
     const handleVideoError = (e: any) => {
         console.log('Video error:');
@@ -74,6 +74,7 @@ const VideoScreen = () => {
         },
         scrollView: {
             flex: 1,
+            backgroundColor:'#FFDD0031',
             alignItems: 'center',
             justifyContent: 'center',
         },
@@ -93,7 +94,7 @@ const VideoScreen = () => {
         },
     });
     return (
-        <ScrollView style={{ flex: 1 }}
+        <ScrollView style={{ flex: 1, backgroundColor:'gold' }}
             contentContainerStyle={styles2.scrollView}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
