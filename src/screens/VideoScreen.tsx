@@ -8,12 +8,15 @@ import {
     ScrollView,
     RefreshControl,
     Dimensions,
+    BackHandler,
+    TouchableOpacity,
 } from 'react-native';
 // import YoutubeIframe from 'react-native-youtube-iframe';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Video from 'react-native-video';
 import storage from '@react-native-firebase/storage';
 import WebView from 'react-native-webview';
+import { colors } from '../constants/colors';
 
 
 const VideoScreen = () => {
@@ -23,6 +26,7 @@ const VideoScreen = () => {
     const [videoError, setVideoError] = useState(false);
     const [videoStore, setVideoStore] = useState("");
     const videoRef2 = useRef(null);
+    const nav = useNavigation();
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -42,7 +46,7 @@ const VideoScreen = () => {
     }
     useEffect(() => {
         console.log('just for test');
-        
+
     })
     useEffect(() => {
         // setTimeout(() => {
@@ -94,6 +98,8 @@ const VideoScreen = () => {
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
+            <TouchableOpacity style={{ padding: 15, backgroundColor: colors.mainColor, position: 'absolute',top:20,left:20, zIndex:15 }} onPress={() => {nav.goBack()}}><Text style={{ color: 'white' }}>Retour</Text></TouchableOpacity>
+
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
                 {(!videoError ? (
 

@@ -65,7 +65,7 @@ const App = () => {
         }}
       >
         <Stack.Screen name="drawer" component={DrawerLayout} options={{ headerShown: false }} />
-        <Stack.Screen name="video" component={VideoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="video" component={VideoScreen} options={{ headerShown: false}} />
 
       </Stack.Navigator>
     </NavigationContainer>
