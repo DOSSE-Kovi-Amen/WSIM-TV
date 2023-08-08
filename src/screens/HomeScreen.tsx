@@ -33,9 +33,9 @@ const HomeScreen = () => {
     const getStorage = async () => {
         storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
             setVideoStore(downloadURL)
-         }).catch((error) => {
+        }).catch((error) => {
             Alert.alert(error.message)
-         });
+        });
     }
     useEffect(() => {
         getStorage();
@@ -72,15 +72,15 @@ const HomeScreen = () => {
     });
     const styles3 = StyleSheet.create({
         container: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
         },
         video: {
-          width: Dimensions.get('window').width,
-          height: 200,
+            width: Dimensions.get('window').width,
+            height: 200,
         },
-      });
+    });
     return (
         <ScrollView
             contentContainerStyle={styles2.scrollView}
@@ -90,7 +90,6 @@ const HomeScreen = () => {
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
                 {(!videoError ? (
                     <WebView
-                    
                         source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
                         // onError={handleVideoError}
                         onHttpError={handleVideoError}
@@ -100,26 +99,26 @@ const HomeScreen = () => {
                         // onLoadStart={() => setIsLoading(true)
                         // }
                         onLoadEnd={() => setIsLoading(false)}
-                        // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
-
-                    />
-                    
-                ) : (
-                    
-                    <WebView
-                    
-                    source={{ uri: videoStore }}
-                    // onError={handleVideoError}
-                    onHttpError={handleVideoError}
-                    startInLoadingState={true}
-                    // paused={paused}
-                    style={styles3.video}
-                    // onLoadStart={() => setIsLoading(true)
-                    // }
-                    onLoadEnd={() => setIsLoading(false)}
                     // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
 
-                />))}
+                    />
+
+                ) : (
+
+                    <WebView
+
+                        source={{ uri: videoStore }}
+                        // onError={handleVideoError}
+                        onHttpError={handleVideoError}
+                        startInLoadingState={true}
+                        // paused={paused}
+                        style={styles3.video}
+                        // onLoadStart={() => setIsLoading(true)
+                        // }
+                        onLoadEnd={() => setIsLoading(false)}
+                    // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
+
+                    />))}
                 {isLoading && (
                     <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>

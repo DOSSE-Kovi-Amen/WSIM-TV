@@ -6,10 +6,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerLayout from './src/screens/DrawerLayout';
 import SplashScreen from 'react-native-splash-screen';
+// import TrackPlayer, { State } from 'react-native-track-player';
 
 const App = () => {
   const requestCameraPermission = async () => {
+
     try {
+
       const granted = await PermissionsAndroid.requestMultiple(
         [
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
@@ -43,6 +46,7 @@ const App = () => {
     }
   };
   useEffect(() => {
+
     SplashScreen.hide();
     requestCameraPermission();
 

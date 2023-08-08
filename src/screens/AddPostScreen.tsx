@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Alert,
     Button,
@@ -36,6 +36,7 @@ export default function AddPostScreen() {
     const [videoStore, setVideoStore] = useState("");
     const [loadingPost, setLoadingPost] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const videoRef = useRef(null);
 
     const getStorage = async () => {
 
@@ -177,6 +178,7 @@ export default function AddPostScreen() {
 
                                 </View>
                                 <Video
+                                    ref={videoRef}
                                     source={{ uri: videoStore }}
                                     onError={() => console.log('Error loading video from cloud storage ')
                                     }
@@ -197,7 +199,7 @@ export default function AddPostScreen() {
 
                                 <TextInput value={desc} onChangeText={(desc) => { setDesc(desc) }} multiline style={[password == truepassword ? styles.input : styles.none, { color: 'black' }]} placeholder="Entrer La Description"
                                 />
-                                {(password == truepassword) &&<View style={{ marginTop: 20 }}>
+                                {(password == truepassword) && <View style={{ marginTop: 20 }}>
                                     <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer les posts</Text>
 
                                 </View>}
