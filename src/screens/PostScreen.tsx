@@ -52,7 +52,7 @@ export default function PostScreen() {
                 {datas.map((item: any) => {
 
                     return (
-                        <TouchableOpacity key={item.id} style={{ marginBottom: 10 }} onPress={() => Linking.openURL(item?.desc)}>
+                        <TouchableOpacity key={item.id} style={{ marginBottom: 25 }} onPress={() => Linking.openURL(item?.desc)}>
                             <View style={{
                                 backgroundColor: 'white',
                                 borderColor: '#cccccc',
@@ -61,7 +61,7 @@ export default function PostScreen() {
                                 shadowColor: 'black',
                                 elevation: 4
                             }}>
-                                {item?.imageUrl && <Image resizeMode='cover' style={[{ width: '100%', height: 220 },]} source={{ uri: item?.imageUrl }} />}
+                                {item?.imageUrl && <Image resizeMode='cover' style={[{ width: '100%', height: 200 },]} source={{ uri: item?.imageUrl }} />}
                                 <View style={{ padding: 15, backgroundColor: colors.mainColor }}>
                                     {item?.title ? <Text style={{ color: 'white', fontSize: 16, }}>{item?.title}</Text>
                                         : <Text style={{ color: 'white', fontSize: 16, }}>{item?.desc}</Text>

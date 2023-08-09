@@ -177,7 +177,7 @@ export default function AddPostScreen() {
                                     <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>{`Téléchargement: ${uploadProgress.toFixed(2)}%`}</Text>
 
                                 </View> */}
-                                <Video
+                                {/* <Video
                                     ref={videoRef}
                                     source={{ uri: videoStore }}
                                     onError={() => console.log('Error loading video from cloud storage ')
@@ -190,7 +190,8 @@ export default function AddPostScreen() {
                                 // style={styles2.backgroundVideo}
                                 // onLoadStart={() => setIsLoading(true)}
                                 // onLoad={() => setIsLoading(false)}
-                                />{/* <Image style={{ width: '100%', height: 200 }} source={{ uri: videoStore || "http://www.g.png" }} /> */}
+                                />
+                                <Image style={{ width: '100%', height: 200 }} source={{ uri: videoStore || "http://www.g.png" }} /> */}
 
                             </View>}
                             <View style={{ marginBottom: 20, marginTop: 20 }}>

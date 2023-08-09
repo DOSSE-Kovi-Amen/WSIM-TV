@@ -25,11 +25,10 @@ const videos = [
 ];
 
 const VideoScreen = () => {
-    const isFocused = useIsFocused();
-    const [isLoading, setIsLoading] = useState(true);
+
     const [refreshing, setRefreshing] = useState(false);
+    const [istutoplaying, setIsTutoplaying] = useState(true);
     const [videoError, setVideoError] = useState(false);
-    // const [videoStore, setVideoStore] = useState("");
     const videoRef2 = useRef(null);
     const nav = useNavigation();
     const [randomIndex, setRandomIndex] = useState(0);
@@ -48,12 +47,13 @@ const VideoScreen = () => {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        setVideoError(false);
-        setIsLoading(true) // Reset video error indicator
+        setIsTutoplaying(false);
+
         setTimeout(() => {
             setRefreshing(false);
-            setIsLoading(false);
-        }, 3000);
+            setIsTutoplaying(false);
+
+        }, 1000);
     }, []);
     // const getStorage = async () => {
     //     storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
@@ -120,52 +120,40 @@ const VideoScreen = () => {
             <TouchableOpacity style={{ padding: 15, backgroundColor: colors.mainColor, position: 'absolute', top: 20, left: 20, zIndex: 15 }} onPress={() => { nav.goBack() }}><Text style={{ color: 'white' }}>Retour</Text></TouchableOpacity>
 
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-                {((!videoError && isLoading==false) ? (
+                <Video
+                    ref={videoRef2}
+                    source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
+                    controls
+                    paused={false}
+                    resizeMode='contain'
+                    style={{ position: 'absolute', width: "100%", height: '100%' }}
+                    onBuffer={handleVideoError}                // Callback when remote video is buffering
+                    onError={handleVideoError}
+                    onLoadStart={() => {
+                        console.log('load video');
+                        setIsTutoplaying(true)
+                    }}
+                    onLoad={() => {
+                        console.log('load end');
+                        setVideoError(false)
+                        setIsTutoplaying(false)
+                    }}
+                // Autres propriétés et gestionnaires d'événements ici
+                />
 
-                    <Video
-                        ref={videoRef2}
-                        source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
-                        controls
-                        paused={false}
-                        resizeMode='contain'
-                        style={{ position: 'absolute', width: "100%", height: '100%' }}
-                        onBuffer={handleVideoError}                // Callback when remote video is buffering
-                        onError={handleVideoError}
-                        onLoadStart={() => {
-                            console.log('load video');
-                            setIsLoading(true)
-                        }}
-                        onLoad={() => {
-                            console.log('load end');
-                            setIsLoading(false)
-                        }}
-                    // Autres propriétés et gestionnaires d'événements ici
-                    />
+                {(istutoplaying || videoError) && <WebView
+                    source={videos[randomIndex]}
+                    allowsInlineMediaPlayback={true}
+                    onEnd={onVideoEnd}
+                    onHttpError={handleVideoError}
+                    startInLoadingState={true}
+                    // paused={paused}
+                    style={styles3.video}
+                // onLoadStart={() => setIsLoading(true)
+                // }
+                // onLoadEnd={() => null}
 
-                ) : (
-
-                    <WebView
-                        source={videos[randomIndex]}
-                        allowsInlineMediaPlayback={true}
-                        onEnd={onVideoEnd}
-                        onHttpError={handleVideoError}
-                        startInLoadingState={true}
-                        // paused={paused}
-                        style={styles3.video}
-                        // onLoadStart={() => setIsLoading(true)
-                        // }
-                        onLoadEnd={() => setIsLoading(false)}
-                    // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
-
-                    />))}
-                {/* {isLoading && (
-                    <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={60} color="green" />
-                            <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
-                        </View>
-                    </View>
-                )} */}
+                />}
             </View>
         </ScrollView>
 
