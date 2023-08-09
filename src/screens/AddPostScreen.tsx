@@ -38,19 +38,19 @@ export default function AddPostScreen() {
     const [uploadProgress, setUploadProgress] = useState(0);
     const videoRef = useRef(null);
 
-    const getStorage = async () => {
+    // const getStorage = async () => {
 
-        storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
-            console.log(downloadURL);
+    //     storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
+    //         console.log(downloadURL);
 
-            setVideoStore(downloadURL)
-        }).catch((error) => {
-            Alert.alert(error.message)
-        });
+    //         setVideoStore(downloadURL)
+    //     }).catch((error) => {
+    //         Alert.alert(error.message)
+    //     });
 
-    }
+    // }
     useEffect(() => {
-        getStorage();
+        // getStorage();
 
         const subscriber = database().collection('posts').orderBy('created_at', 'desc').onSnapshot((querySnapshot) => {
             const todos = querySnapshot.docs;
@@ -125,43 +125,43 @@ export default function AddPostScreen() {
             .delete()
     }
 
-    const uploadVideo = async () => {
-        try {
-            const doc: any = await DocumentPicker.pick({
-                type: [DocumentPicker.types.video],
-            });
+    // const uploadVideo = async () => {
+    //     try {
+    //         const doc: any = await DocumentPicker.pick({
+    //             type: [DocumentPicker.types.video],
+    //         });
 
 
-            console.log(doc[0]?.uri);
-            const reference = storage().ref(`files/pub.mp4`);
-            setVideoStore(doc[0]?.uri);
-            const fileUri = await getPathForFirebaseStorage(doc[0]?.uri)
+    //         console.log(doc[0]?.uri);
+    //         const reference = storage().ref(`files/pub.mp4`);
+    //         setVideoStore(doc[0]?.uri);
+    //         const fileUri = await getPathForFirebaseStorage(doc[0]?.uri)
 
-            console.log('====================================');
-            console.log(fileUri);
-            console.log('====================================');
+    //         console.log('====================================');
+    //         console.log(fileUri);
+    //         console.log('====================================');
 
-            const task = reference.putFile(fileUri);
-            task.on('state_changed', (snapshot: any) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                setUploadProgress(progress);
-                console.log(progress);
+    //         const task = reference.putFile(fileUri);
+    //         task.on('state_changed', (snapshot: any) => {
+    //             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //             setUploadProgress(progress);
+    //             console.log(progress);
 
-            });
-            task.then(() => {
-                console.log('Image uploaded to the bucket!');
-            });
-            console.log('Upload successful!');
-        } catch (error: any) {
-            Alert.alert(error?.message);
-            // console.error('Error uploading video:', error);
-        }
-    };
-    async function getPathForFirebaseStorage(uri: any) {
-        // if (IS_IOS) return uri
-        const stat = await RNFetchBlob.fs.stat(uri)
-        return stat.path
-    }
+    //         });
+    //         task.then(() => {
+    //             console.log('Image uploaded to the bucket!');
+    //         });
+    //         console.log('Upload successful!');
+    //     } catch (error: any) {
+    //         Alert.alert(error?.message);
+    //         // console.error('Error uploading video:', error);
+    //     }
+    // };
+    // async function getPathForFirebaseStorage(uri: any) {
+    //     // if (IS_IOS) return uri
+    //     const stat = await RNFetchBlob.fs.stat(uri)
+    //     return stat.path
+    // }
 
     return (
         <SafeAreaView>
@@ -171,12 +171,12 @@ export default function AddPostScreen() {
                         <ActivityIndicator size={80} color="green" />
                         : <View>
                             {(password == truepassword) && <View>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer la vidéo pub</Text>
+                                {/* <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'black' }}>Gérer la vidéo pub</Text>
                                 <View style={{ margin: 10 }} >
                                     <Button title='Vidéo' onPress={uploadVideo} color="#2996C9" />
                                     <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>{`Téléchargement: ${uploadProgress.toFixed(2)}%`}</Text>
 
-                                </View>
+                                </View> */}
                                 <Video
                                     ref={videoRef}
                                     source={{ uri: videoStore }}

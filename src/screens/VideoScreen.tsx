@@ -18,15 +18,33 @@ import storage from '@react-native-firebase/storage';
 import WebView from 'react-native-webview';
 import { colors } from '../constants/colors';
 
+const videos = [
+    require('../assets/video1.mp4'),
+    require('../assets/video2.mp4'),
+    require('../assets/video3.mp4'),
+];
 
 const VideoScreen = () => {
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [videoError, setVideoError] = useState(false);
-    const [videoStore, setVideoStore] = useState("");
+    // const [videoStore, setVideoStore] = useState("");
     const videoRef2 = useRef(null);
     const nav = useNavigation();
+    const [randomIndex, setRandomIndex] = useState(0);
+
+    const playNextRandomVideo = () => {
+        const newIndex = Math.floor(Math.random() * videos.length);
+        setRandomIndex(newIndex);
+    };
+    const onVideoEnd = () => {
+        playNextRandomVideo();
+    };
+
+    useEffect(() => {
+        playNextRandomVideo();
+    }, []);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -37,13 +55,13 @@ const VideoScreen = () => {
             setIsLoading(false);
         }, 3000);
     }, []);
-    const getStorage = async () => {
-        storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
-            setVideoStore(downloadURL)
-        }).catch((error) => {
-            Alert.alert(error.message)
-        });
-    }
+    // const getStorage = async () => {
+    //     storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
+    //         setVideoStore(downloadURL)
+    //     }).catch((error) => {
+    //         Alert.alert(error.message)
+    //     });
+    // }
     useEffect(() => {
         console.log('just for test');
 
@@ -57,7 +75,7 @@ const VideoScreen = () => {
 
     const handleVideoError = (e: any) => {
         console.log('Video error:');
-        getStorage();
+        // getStorage();
         setVideoError(true);
     };
 
@@ -74,7 +92,7 @@ const VideoScreen = () => {
         },
         scrollView: {
             flex: 1,
-            backgroundColor:'#FFDD0031',
+            // backgroundColor:'#FFDD0031',
             alignItems: 'center',
             justifyContent: 'center',
         },
@@ -94,15 +112,15 @@ const VideoScreen = () => {
         },
     });
     return (
-        <ScrollView style={{ flex: 1, backgroundColor:'gold' }}
+        <ScrollView style={{ flex: 1, backgroundColor: '#FFDD0031' }}
             contentContainerStyle={styles2.scrollView}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-            <TouchableOpacity style={{ padding: 15, backgroundColor: colors.mainColor, position: 'absolute',top:20,left:20, zIndex:15 }} onPress={() => {nav.goBack()}}><Text style={{ color: 'white' }}>Retour</Text></TouchableOpacity>
+            <TouchableOpacity style={{ padding: 15, backgroundColor: colors.mainColor, position: 'absolute', top: 20, left: 20, zIndex: 15 }} onPress={() => { nav.goBack() }}><Text style={{ color: 'white' }}>Retour</Text></TouchableOpacity>
 
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
-                {(!videoError ? (
+                {((!videoError && isLoading==false) ? (
 
                     <Video
                         ref={videoRef2}
@@ -127,9 +145,9 @@ const VideoScreen = () => {
                 ) : (
 
                     <WebView
-
-                        source={{ uri: videoStore }}
-                        // onError={handleVideoError}
+                        source={videos[randomIndex]}
+                        allowsInlineMediaPlayback={true}
+                        onEnd={onVideoEnd}
                         onHttpError={handleVideoError}
                         startInLoadingState={true}
                         // paused={paused}
@@ -140,14 +158,14 @@ const VideoScreen = () => {
                     // onLoadProgress={()=>setIsLoading(true)} // Appelé lorsque le chargement de la WebView est terminé
 
                     />))}
-                {isLoading && (
+                {/* {isLoading && (
                     <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ backgroundColor: 'black', height: 300, width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                             <ActivityIndicator size={60} color="green" />
                             <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Chargement en cours...</Text>
                         </View>
                     </View>
-                )}
+                )} */}
             </View>
         </ScrollView>
 

@@ -10,24 +10,26 @@ import {
     Dimensions,
     TouchableOpacity,
     Button,
+    Image,
 } from 'react-native';
 // import YoutubeIframe from 'react-native-youtube-iframe';
-import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
-import Video from 'react-native-video';
-import storage from '@react-native-firebase/storage';
-import WebView from 'react-native-webview';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+
 import { colors } from '../constants/colors';
+import Carousel from 'react-native-reanimated-carousel';
 
-
+const images = [
+    require('../assets/wsimtv1.jpeg'),
+    require('../assets/wsimtv2.jpeg'),
+    require('../assets/wsimtv3.jpeg'),
+];
 const HomeScreen = () => {
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [videoError, setVideoError] = useState(false);
-    const [videoStore, setVideoStore] = useState("");
-    const videoRef2 = useRef(null);
-    const nav:any = useNavigation();
+    const width = Dimensions.get('window').width;
+    const nav: any = useNavigation();
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -38,13 +40,7 @@ const HomeScreen = () => {
             setIsLoading(false);
         }, 3000);
     }, []);
-    const getStorage = async () => {
-        storage().ref(`files/pub.mp4`).getDownloadURL().then((downloadURL) => {
-            setVideoStore(downloadURL)
-        }).catch((error) => {
-            Alert.alert(error.message)
-        });
-    }
+
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
@@ -53,17 +49,43 @@ const HomeScreen = () => {
     }, [isFocused]);
 
     return (
-        <ScrollView style={{ flex: 1, padding:25,marginTop:50 }}
+        <ScrollView style={{ flex: 1, padding: 25, marginTop: 50 }}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-            <TouchableOpacity onPress={()=> nav.navigate('video')}>
+            <TouchableOpacity onPress={() => nav.navigate('video')}>
                 <View style={styles.card}>
-                    <FontAwesome name="tv" size={250} color="white" style={{ marginBottom:35 }} />
-                    <Button title='Cliquer pour Suivre' color="gold" />
+                    {/* <FontAwesome name="tv" size={250} color="white" style={{ marginBottom:35 }} /> */}
+                    <Carousel
+                        loop
+                        width={width}
+                        height={width / 2}
+                        style={{ padding:10 }}
+                        autoPlay={true}
+                        data={images}
+                        scrollAnimationDuration={2000}
+                        onSnapToItem={(index) => console.log('current index:', index)}
+                        renderItem={({ index }) => (
+                            <View
+                                style={{
+                                    // flex: 1,
+                                    // borderWidth: 1,
+                                    padding:5,
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Image resizeMode='contain' source={images[index]} style={{ width: '100%', height: 220, marginBottom: 35 }} />
+
+                                {/* <Text style={{ textAlign: 'center', fontSize: 30 }}>
+                                    {index}
+                                </Text> */}
+                            </View>
+                        )}
+                    />
+                    <Button title='Cliquer pour Suivre la tv' color={colors.mainColor} />
                 </View>
             </TouchableOpacity>
-            
+
         </ScrollView>
     );
 }
@@ -74,10 +96,11 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'column',
         alignItems: 'center',
-        padding: 16,
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        backgroundColor:colors.mainColor,
+        paddingBottom: 16,
+        overflow: 'hidden',
+        borderWidth: 3,
+        // borderColor: 'lightgray',
+        borderColor: colors.mainColor,
         borderRadius: 15,
         marginBottom: 8,
     },
