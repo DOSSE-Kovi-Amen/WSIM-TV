@@ -37,12 +37,16 @@ const VideoScreen = () => {
         const newIndex = Math.floor(Math.random() * videos.length);
         setRandomIndex(newIndex);
     };
-    const onVideoEnd = () => {
-        playNextRandomVideo();
-    };
+
 
     useEffect(() => {
-        playNextRandomVideo();
+        const interval=setInterval(() => {
+            playNextRandomVideo();
+
+        }, 65000)
+        return () => {
+            clearInterval(interval);
+        };
     }, []);
 
     const onRefresh = React.useCallback(() => {
@@ -143,12 +147,12 @@ const VideoScreen = () => {
 
                 {(istutoplaying || videoError) && <WebView
                     source={videos[randomIndex]}
-                    allowsInlineMediaPlayback={true}
-                    onEnd={onVideoEnd}
-                    onHttpError={handleVideoError}
+                    // allowsInlineMediaPlayback={true}
+                    allowsFullscreenVideo
                     startInLoadingState={true}
                     // paused={paused}
                     style={styles3.video}
+
                 // onLoadStart={() => setIsLoading(true)
                 // }
                 // onLoadEnd={() => null}

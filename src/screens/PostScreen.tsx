@@ -52,7 +52,7 @@ export default function PostScreen() {
                 {datas.map((item: any) => {
 
                     return (
-                        <TouchableOpacity key={item.id} style={{ marginBottom: 25 }} onPress={() => Linking.openURL(item?.desc)}>
+                        <TouchableOpacity key={item.id} style={{ marginBottom: 10 }} onPress={() => Linking.openURL(item?.desc)}>
                             <View style={{
                                 backgroundColor: 'white',
                                 borderColor: '#cccccc',
