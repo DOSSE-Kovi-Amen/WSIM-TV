@@ -29,7 +29,9 @@ const VideoScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [istutoplaying, setIsTutoplaying] = useState(true);
     const [videoError, setVideoError] = useState(false);
-    const videoRef2 = useRef(null);
+    const videoRef = useRef<any>(null);
+    const videoRef2 = useRef<any>(null);
+
     const nav = useNavigation();
     const [randomIndex, setRandomIndex] = useState(0);
 
@@ -40,15 +42,12 @@ const VideoScreen = () => {
 
 
     useEffect(() => {
-        const interval=setInterval(() => {
-            playNextRandomVideo();
-
-        }, 65000)
-        return () => {
-            clearInterval(interval);
-        };
+        playNextRandomVideo();
     }, []);
-
+    const onVideoEnd = () => {
+        playNextRandomVideo();
+        // videoRef?.current?.seek(0); // Rembobine la vidéo à 0 pour la lecture en boucle
+      };
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setIsTutoplaying(false);
@@ -145,18 +144,22 @@ const VideoScreen = () => {
                 // Autres propriétés et gestionnaires d'événements ici
                 />
 
-                {(istutoplaying || videoError) && <WebView
+                {/* {(istutoplaying || videoError) && <WebView
                     source={videos[randomIndex]}
                     // allowsInlineMediaPlayback={true}
                     allowsFullscreenVideo
                     startInLoadingState={true}
                     // paused={paused}
                     style={styles3.video}
-
-                // onLoadStart={() => setIsLoading(true)
-                // }
-                // onLoadEnd={() => null}
-
+                />} */}
+                {(istutoplaying || videoError) && <Video
+                    source={videos[randomIndex]}
+                    controls
+                    paused={false}
+                    onEnd={onVideoEnd}
+                    resizeMode='contain'
+                    style={{ position: 'absolute', width: "100%", height: '100%' }}
+                // Autres propriétés et gestionnaires d'événements ici
                 />}
             </View>
         </ScrollView>
