@@ -82,7 +82,7 @@ const HomeScreen = () => {
                             </View>
                         )}
                     />
-                    <Button title='Cliquer pour Suivre la tv' color={colors.mainColor} />
+                    <Button title='Cliquer pour Suivre la tv' color={colors.mainColor} onPress={() => nav.navigate('video')} />
                 </View>
             </TouchableOpacity>
 
