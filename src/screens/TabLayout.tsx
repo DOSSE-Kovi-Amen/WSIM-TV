@@ -28,8 +28,8 @@ export default function TabLayout(){
           tabBarIndicatorStyle:{backgroundColor:'gold', margin:10,}
         }}
       >
-        <Tab.Screen name="home" component={HomeScreen} options={{ title:"WSIM LIVE " }} />
         <Tab.Screen name="radio" component={Radio} options={{ title:"WSIM RADIO" }}/>
+        <Tab.Screen name="home" component={HomeScreen} options={{ title:"WSIM LIVE " }} />
         <Tab.Screen name="post" component={PostScreen} options={{ title:"Posts" }}/>
         
       </Tab.Navigator>

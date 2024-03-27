@@ -17,6 +17,7 @@ import Video from 'react-native-video';
 import storage from '@react-native-firebase/storage';
 import WebView from 'react-native-webview';
 import { colors } from '../constants/colors';
+import TrackPlayer from 'react-native-track-player';
 
 const videos = [
     require('../assets/video1.mp4'),
@@ -28,6 +29,7 @@ const VideoScreen = () => {
 
     const [refreshing, setRefreshing] = useState(false);
     const [istutoplaying, setIsTutoplaying] = useState(true);
+    const [tv, setTV] = useState("");
     const [videoError, setVideoError] = useState(false);
     const videoRef = useRef<any>(null);
     const videoRef2 = useRef<any>(null);
@@ -42,6 +44,8 @@ const VideoScreen = () => {
 
 
     useEffect(() => {
+        TrackPlayer.pause();
+
         playNextRandomVideo();
     }, []);
     const onVideoEnd = () => {
@@ -67,7 +71,16 @@ const VideoScreen = () => {
     // }
     useEffect(() => {
         console.log('just for test');
-
+        fetch('https://dashboard.groupelynxvision.org/api/projects/wsim')
+        .then(response => {
+          return response.json();
+        })
+        .then(async (data: any) => {
+          console.log('====================================');
+          console.log(data.tv);
+          console.log('====================================');
+          setTV(data.tv)
+        });
     })
     // useEffect(() => {
     //     // setTimeout(() => {
@@ -125,7 +138,7 @@ const VideoScreen = () => {
             <View style={{ width: '100%', height: '100%', backgroundColor: '#FFDD0031' }}>
                 <Video
                     ref={videoRef2}
-                    source={{ uri: "https://vps89738.serveur-vps.net/hls/wsim-tv.m3u8" }}
+                    source={{ uri: tv }}
                     controls
                     paused={false}
                     resizeMode='contain'
@@ -152,7 +165,7 @@ const VideoScreen = () => {
                     // paused={paused}
                     style={styles3.video}
                 />} */}
-                {(istutoplaying || videoError) && <Video
+                {/* {(istutoplaying || videoError) && <Video
                     source={videos[randomIndex]}
                     controls
                     paused={false}
@@ -160,7 +173,7 @@ const VideoScreen = () => {
                     resizeMode='contain'
                     style={{ position: 'absolute', width: "100%", height: '100%' }}
                 // Autres propriétés et gestionnaires d'événements ici
-                />}
+                />} */}
             </View>
         </ScrollView>
 
